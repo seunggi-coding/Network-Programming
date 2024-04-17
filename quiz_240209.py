@@ -120,10 +120,29 @@ str = input("Your word: ")
 a_index = str.find('a')+1
 
 if a_index != -1:
+    # 여기에 +1을 하는 이유는, 슬라이싱에서 끝 인덱스는 포함되지 않으므로, 'a'까지 포함된 부분을 얻기 위해서입니다.
     print(str[:a_index])
+
     print(str[a_index:])
 else:
     print("입력한 단어에는 'a'가 포함되어 있지 않습니다.")
+
+# 두 번째 방법
+# 'a'를 기준으로 문자열을 나누고, 최대 1번만 나눕니다.
+# 따라서 결과는 최대 2개의 요소를 가진 리스트가 됩니다.
+# str.split('a', 1): 이 코드는 문자열 str을 'a'를 구분자로 사용하여 분리합니다. 두 번째 인자 1은 분리 작업을 최대 몇 번 수행할지를 지정합니다. 
+# 여기서는 1번만 수행하므로, 'a'를 기준으로 첫 번째 발견된 위치에서 문자열이 두 부분으로 나누어집니다.
+parts = str.split('a', 1)
+
+if len(parts) == 1:
+    # 'a'가 없는 경우
+    print("입력한 단어에는 'a'가 포함되어 있지 않습니다.")
+else:
+    # 'a'가 포함된 경우, 첫 번째 부분 출력 시 'a'를 덧붙여줍니다.
+    print(parts[0] + 'a')
+    # 두 번째 부분이 있으면 출력합니다.
+    if len(parts) > 1:
+        print(parts[1])
 
 print("==========================================================================================")
 
@@ -157,6 +176,7 @@ for i in range(0, 50):
 print(f"list_b : {list_b}")
 
 # map과 람다를 사용해서 해보기
+#  map 함수는 첫 번째 인자로 주어진 함수를 두 번째 인자로 주어진 반복 가능한(iterable) 객체의 각 요소에 적용하고, 그 결과를 map 객체로 반환합니다.
 list_c = []
 list_c = list(map(lambda x: x, range(50)))
 print(f"list_c : {list_c}")
@@ -186,11 +206,19 @@ user_input = input("월을 입력하세요 (전체 이름 또는 3자리 약어)
 
 # 사용자 입력에 따라 해당 월의 일수 출력
 for month, day in days.items():
+    # 사용자 입력(user_input)을 받아서, 첫 글자를 대문자로 변경합니다(title() 함수 사용).
+    # 이후 해당 입력이 days 딕셔너리의 키(월) 혹은 키의 앞 3글자와 일치하는지 확인합니다.
+    # 예를 들어, "January"나 "Jan" 모두 일치하는 것으로 간주합니다.
     if user_input.title() in [month, month[:3]]:
+        # 일치하는 월이 있다면, 해당 월과 그 월의 일수를 출력합니다.
         print(f"{month}는 {day}일.")
+        # 일치하는 월을 찾았으므로 for 루프를 중단합니다.
         break
 else:
+    # for 루프가 break에 의해 중단되지 않고 정상적으로 끝났다면, 
+    # 즉 사용자가 잘못된 입력을 했다면, 잘못 입력했다는 메시지를 출력합니다.
     print("잘못 입력했습니다.")
+
 
 # 알파벳 순서로 모든 월 출력
 print("\n알파벳 순서로 모든 월:")
@@ -204,6 +232,8 @@ for month, day in days.items():
         print(month)
 
 # 월의 일수를 기준으로 오름차순으로 (key-value) 쌍 출력
+# days.items()는 딕셔너리의 모든 항목을 (키, 값) 쌍의 형태로 반환합니다. 
+# 이 때, 각 항목(쌍)은 x로 표현되며, x[0]은 키(월의 이름)를, x[1]은 값(월의 일수)을 나타냅니다.
 print("\n월의 일수를 기준으로 오름차순으로 (key-value) 쌍:")
 for month in sorted(days.items(), key=lambda x: x[1]):
     print(month)
@@ -246,6 +276,8 @@ for person in d:
 user_name = input("\n사용자 이름을 입력하세요: ")
 for person in d:
     if person['name'] == user_name:
+        # 이메일 출력 부분에서는 조건부 표현식을 사용합니다. person['email'] if person['email'] else '이메일 없음'은 만약 person['email']이 참이라면
+        # (즉, 값이 존재하면) 그 값을 사용하고, 그렇지 않으면 '이메일 없음' 문자열을 사용합니다.
         print(f"전화번호: {person['phone']}, 이메일: {person['email'] if person['email'] else '이메일 없음'}")
         break
 else:
@@ -259,25 +291,41 @@ print("=========================================================================
 # 예) 문자열 'led=on&motor=off&switch=off'이고 구분 문자가 '&', '='일 때 {'led':'on', 'motor':'off', 'switch':'off'}
 # 반환
 
+# parse_query_string 함수는 쿼리 문자열을 파싱하여 딕셔너리로 반환합니다.
+# query_string: 파싱할 쿼리 문자열
+# delimiter1: 첫 번째 구분 문자(기본값 '&')
+# delimiter2: 두 번째 구분 문자(기본값 '=')
 def parse_query_string(query_string, delimiter1='&', delimiter2='='):
+    # 결과를 저장할 빈 딕셔너리를 초기화합니다.
     result = {}
     
+    # 첫 번째 구분 문자(delimiter1, 기본값 '&')로 문자열을 분리하여 반복합니다.
     for p in query_string.split(delimiter1):
+        # 두 번째 구분 문자(delimiter2, 기본값 '=')로 각 부분을 다시 분리하여
+        # key와 value를 얻습니다.
+        print("p = ", p)
+        # 언패킹 사용
         key, value = p.split(delimiter2)
+        # 얻은 key와 value를 딕셔너리에 추가합니다.
         result[key] = value
     
+    # 완성된 딕셔너리를 반환합니다.
     return result
 
+# 테스트할 쿼리 문자열
 string = 'led=on&motor=off&switch=off'
+# parse_query_string 함수를 호출하여 문자열을 파싱한 결과를 얻습니다.
 parsed_result = parse_query_string(string)
+# 파싱된 딕셔너리를 출력합니다.
 print(parsed_result)
+
 
 
 print("==========================================================================================")
 
 # 연습문제 11
 # 다음 Person 클래스를 상속 받는 Employee 클래스를 정의하라.
-# Employee 클래스에 employyID 속성을 추가하고 getID() 메소드를 정의하라. getID()메소드를 employeeID를 반환하는 메소드이다.
+# Employee 클래스에 employeeID 속성을 추가하고 getID() 메소드를 정의하라. getID()메소드를 employeeID를 반환하는 메소드이다.
 # 최종적으로 Employee 클래스를 이용하여 Employee("IoT", 65, 2018)로 생성된 객체의 이름, 나이, ID를 출력하는 프로그램을 작성하라.
 
 class Person:
