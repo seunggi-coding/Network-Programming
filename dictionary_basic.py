@@ -48,3 +48,9 @@ for key, value in person.items():
 # name: John
 # age: 30
 # city: New York
+
+# 딕셔너리를 값으로 정렬하여 출력 (람다 사용)
+print("값으로 정렬된 딕셔너리:")
+sorted_by_value = sorted(person.items(), key=lambda x: x[1])
+for key, value in sorted_by_value:
+    print(f"{key}: {value}")
