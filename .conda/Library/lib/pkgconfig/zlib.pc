@@ -1,0 +1,13 @@
+prefix=d:/networkprogramming/.conda/Library
+exec_prefix=d:/networkprogramming/.conda/Library
+libdir=d:/networkprogramming/.conda/Library/lib
+sharedlibdir=d:/networkprogramming/.conda/Library/lib
+includedir=d:/networkprogramming/.conda/Library/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.2.13
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}
